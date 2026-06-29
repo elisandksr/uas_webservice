@@ -46,14 +46,22 @@ if ($response) {
 
 <div class="container" style="padding-top: 8rem;">
     <!-- Page Header Banner -->
-    <section class="explore-banner" style="padding: 3rem; margin-bottom: 2rem; background: linear-gradient(135deg, var(--c-secondary), #4F46E5);">
-        <div class="explore-banner-content" style="max-width: 800px;">
-            <h1 style="font-size: 2.5rem; color: white; margin-bottom: 1rem;">Keliling Dunia Lewat Rasa 🌍</h1>
-            <p style="font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem;">Cari ratusan resep otentik dari berbagai negara. Ketik bahan favorit Anda (dalam bahasa Inggris, misalnya: <em>beef, pasta, chicken</em>) dan temukan kelezatan baru!</p>
-            <a href="?action=random" class="btn btn-primary" style="background: var(--c-accent); color: #B48E00; box-shadow: none;"><i class="fa-solid fa-dice"></i> Beri Saya Resep Kejutan!</a>
+    <section class="explore-banner" style="padding: 1.5rem 2rem; margin-bottom: 2rem; border-radius: 16px; position: relative; overflow: hidden; display: flex; align-items: center; box-shadow: 0 10px 25px rgba(43, 69, 223, 0.15);">
+        <!-- Background Image with Fade-to-Right Blue Overlay -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(43,69,223, 0.95) 0%, rgba(43,69,223, 0.8) 35%, rgba(43,69,223, 0) 70%); z-index: 2;"></div>
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop" alt="World Food" style="width: 100%; height: 100%; object-fit: cover; object-position: right center; z-index: 1;">
         </div>
-        <div class="explore-banner-img" style="font-size: 8rem; opacity: 0.5; top: 10px; right: 50px;">
-            🍽️
+        
+        <div class="explore-banner-content" style="max-width: 500px; width: 100%; position: relative; z-index: 3; text-align: left; margin-right: auto; display: flex; flex-direction: column; align-items: flex-start;">
+            <div style="display: inline-block; padding: 4px 10px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 100px; color: white; font-weight: 600; font-size: 0.75rem; margin-bottom: 0.8rem; border: 1px solid rgba(255,255,255,0.2);">
+                <i class="fa-solid fa-globe" style="margin-right: 4px;"></i> Eksplorasi Kuliner Global
+            </div>
+            <h1 style="font-size: 2rem; color: white; margin-bottom: 0.6rem; font-family: var(--f-heading); text-shadow: 0 2px 5px rgba(0,0,0,0.2); line-height: 1.2; font-weight: 800; text-align: left;">Keliling Dunia<br><span style="color: #FFD23F;">Lewat Rasa 🌍</span></h1>
+            <p style="font-size: 0.95rem; color: rgba(255,255,255,0.9); margin-bottom: 1.2rem; line-height: 1.5; text-shadow: 0 1px 5px rgba(0,0,0,0.2); text-align: left;">Cari ratusan resep otentik. Ketik bahan favorit Anda (misal: <em>beef, pasta</em>) dan temukan kelezatan baru!</p>
+            <a href="?action=random" class="btn" style="background: white; color: var(--c-secondary); padding: 0.6rem 1.5rem; font-size: 0.9rem; border-radius: 100px; font-weight: 700; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)';">
+                <i class="fa-solid fa-dice" style="color: #FF6B35; font-size: 1rem;"></i> Beri Resep Kejutan
+            </a>
         </div>
     </section>
 
@@ -93,7 +101,7 @@ if ($response) {
                             <span class="badge"><?= htmlspecialchars($kategori) ?></span>
                         <?php endif; ?>
                         
-                        <img src="<?= htmlspecialchars($meal['strMealThumb']) ?>/preview" alt="<?= htmlspecialchars($meal['strMeal']) ?>" class="recipe-img">
+                        <img src="<?= htmlspecialchars($meal['strMealThumb']) ?>" alt="<?= htmlspecialchars($meal['strMeal']) ?>" class="recipe-img">
                     </div>
                     
                     <div class="recipe-content">

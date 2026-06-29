@@ -24,6 +24,16 @@ $result_latest = $conn->query($sql);
 
 // Get categories for filter dropdown
 $cat_result = $conn->query("SELECT DISTINCT kategori FROM resep ORDER BY kategori ASC");
+
+// Get Statistics for Dashboard
+$total_resep_query = $conn->query("SELECT COUNT(*) as total FROM resep");
+$total_resep = $total_resep_query->fetch_assoc()['total'] ?? 0;
+
+$total_kategori_query = $conn->query("SELECT COUNT(DISTINCT kategori) as total FROM resep");
+$total_kategori = $total_kategori_query->fetch_assoc()['total'] ?? 0;
+
+$resep_baru_query = $conn->query("SELECT COUNT(*) as total FROM resep WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
+$resep_baru = $resep_baru_query->fetch_assoc()['total'] ?? 0;
 ?>
 
 <!-- Premium Hero Section -->
@@ -57,9 +67,41 @@ $cat_result = $conn->query("SELECT DISTINCT kategori FROM resep ORDER BY kategor
     </div>
 </section>
 
-<!-- Floating Search & Filter Panel -->
-<div class="container" style="position: relative; z-index: 20; margin-top: -4.5rem; margin-bottom: 4rem;">
-    <form action="" method="GET" class="search-bar" style="padding: 15px 25px; border-radius: 100px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); background: white; display: flex; align-items: center; gap: 15px; border: 1px solid var(--c-border); transition: all 0.3s ease;">
+<!-- Floating Dashboard Statistics -->
+<div class="container" style="position: relative; z-index: 20; margin-top: -4.5rem; margin-bottom: 3rem;">
+    <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <!-- Total Resep Card -->
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--c-primary), #FF8F60); padding: 1.8rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(255,107,53,0.3); display: flex; align-items: center; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;" onmouseover="this.style.transform='translateY(-8px) scale(1.02)'; this.style.boxShadow='0 25px 45px rgba(255,107,53,0.4)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 15px 35px rgba(255,107,53,0.3)';">
+            <div style="position: relative; z-index: 2;">
+                <p style="color: rgba(255,255,255,0.8); font-size: 1.05rem; font-weight: 600; margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 1px;">Total Resep</p>
+                <h3 style="font-size: 3rem; font-weight: 800; margin: 0; color: white; line-height: 1;"><?= $total_resep ?></h3>
+            </div>
+            <i class="fa-solid fa-book-open" style="position: absolute; right: -15px; bottom: -20px; font-size: 7rem; color: white; opacity: 0.15; transform: rotate(-15deg); transition: transform 0.4s ease;"></i>
+        </div>
+        
+        <!-- Kategori Card -->
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--c-secondary), #4F65F0); padding: 1.8rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(43,69,223,0.3); display: flex; align-items: center; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;" onmouseover="this.style.transform='translateY(-8px) scale(1.02)'; this.style.boxShadow='0 25px 45px rgba(43,69,223,0.4)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 15px 35px rgba(43,69,223,0.3)';">
+            <div style="position: relative; z-index: 2;">
+                <p style="color: rgba(255,255,255,0.8); font-size: 1.05rem; font-weight: 600; margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 1px;">Kategori</p>
+                <h3 style="font-size: 3rem; font-weight: 800; margin: 0; color: white; line-height: 1;"><?= $total_kategori ?></h3>
+            </div>
+            <i class="fa-solid fa-layer-group" style="position: absolute; right: -10px; bottom: -10px; font-size: 7rem; color: white; opacity: 0.15; transform: rotate(-10deg); transition: transform 0.4s ease;"></i>
+        </div>
+        
+        <!-- Resep Baru Card -->
+        <div class="stat-card" style="background: linear-gradient(135deg, #10B981, #34D399); padding: 1.8rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(16,185,129,0.3); display: flex; align-items: center; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;" onmouseover="this.style.transform='translateY(-8px) scale(1.02)'; this.style.boxShadow='0 25px 45px rgba(16,185,129,0.4)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 15px 35px rgba(16,185,129,0.3)';">
+            <div style="position: relative; z-index: 2;">
+                <p style="color: rgba(255,255,255,0.8); font-size: 1.05rem; font-weight: 600; margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 1px;">Baru (7 Hari)</p>
+                <h3 style="font-size: 3rem; font-weight: 800; margin: 0; color: white; line-height: 1;"><?= $resep_baru ?></h3>
+            </div>
+            <i class="fa-solid fa-sparkles" style="position: absolute; right: -10px; bottom: -15px; font-size: 7rem; color: white; opacity: 0.15; transform: rotate(10deg); transition: transform 0.4s ease;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filter Panel -->
+<div class="container" style="margin-bottom: 4rem;">
+    <form action="" method="GET" class="search-bar" style="padding: 15px 25px; border-radius: 100px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); background: white; display: flex; align-items: center; gap: 15px; border: 1px solid var(--c-border); transition: all 0.3s ease;">
         <i class="fa-solid fa-magnifying-glass" style="color: var(--c-primary); font-size: 1.4rem;"></i>
         <input type="text" name="search" placeholder="Cari resep andalan keluarga Anda..." value="<?= htmlspecialchars($search) ?>" style="font-size: 1.1rem; border: none; outline: none; flex: 1;">
         
@@ -154,25 +196,7 @@ $cat_result = $conn->query("SELECT DISTINCT kategori FROM resep ORDER BY kategor
         <?php endif; ?>
     </div>
 
-    <!-- Elegant banner for World Recipes API -->
-    <div style="margin-top: 6rem;">
-        <section class="explore-banner" style="background: linear-gradient(135deg, var(--c-secondary), #1D4ED8); box-shadow: 0 20px 40px rgba(43,69,223,0.15); display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 2rem; padding: 3rem; border-radius: var(--radius-lg); position: relative; overflow: hidden; width: 100%;">
-            <div class="explore-banner-content" style="max-width: 65%; position: relative; z-index: 2;">
-                <h2 style="font-size: 2.2rem; margin-bottom: 1rem; color: white; font-weight: 800;">Keliling Dunia Lewat Dapur Anda? 🌍</h2>
-                <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 0; color: rgba(255,255,255,0.9); font-weight: 400;">
-                    Bosan dengan menu harian yang itu-itu saja? Jelajahi ratusan resep internasional dari API TheMealDB secara gratis dan real-time. Temukan menu baru dari belahan dunia lain sekarang!
-                </p>
-            </div>
-            <div style="position: relative; z-index: 2; flex-shrink: 0;">
-                <a href="<?= $base_url ?>/api/index.php" class="btn btn-white" style="background: white; color: var(--c-secondary); font-size: 1.1rem; padding: 1.1rem 2.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; font-weight: 700;">
-                    <i class="fa-solid fa-plane-departure"></i> Mulai Petualangan Rasa
-                </a>
-            </div>
-            <div class="explore-banner-img" style="position: absolute; right: -10px; bottom: -20px; font-size: 12rem; opacity: 0.12; font-family: none; pointer-events: none; z-index: 1;">
-                🗺️
-            </div>
-        </section>
-    </div>
+
 </div>
 
 <?php require_once 'includes/footer.php'; ?>
