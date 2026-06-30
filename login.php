@@ -34,179 +34,246 @@ if (isset($_POST['login'])) {
     <!-- Premium Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --c-primary: #FF6B35;
-            --c-primary-hover: #E85A25;
-            --c-secondary: #2B45DF;
-            --c-text-main: #111827;
+            --c-primary: #FF5A00;
+            --c-primary-dark: #E04D00;
+            --c-primary-light: #FF8542;
+            --c-white: #FFFFFF;
+            --c-text-main: #1F2937;
             --c-text-muted: #6B7280;
-            --c-border: #E5E7EB;
+            --c-bg: #F9FAFB;
             --f-heading: 'Outfit', sans-serif;
             --f-body: 'Plus Jakarta Sans', sans-serif;
+            --transition: all 0.3s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: var(--f-body);
-            background: #FFFFFF;
+            background-color: var(--c-bg);
             color: var(--c-text-main);
             min-height: 100vh;
             display: flex;
-            overflow: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll, allow vertical */
         }
 
-        .login-container {
+        .login-wrapper {
             display: flex;
             width: 100%;
             min-height: 100vh;
         }
 
-        /* Form Section */
-        .login-form-section {
-            flex: 0 0 50%;
+        /* Left Panel - The Form */
+        .login-sidebar {
+            width: 50%;
+            background: var(--c-white);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            padding: 3rem;
+            padding: 2rem 6%;
             position: relative;
-            background: #FFFFFF;
             z-index: 10;
+            box-shadow: 20px 0 50px rgba(0,0,0,0.05);
         }
 
-        .login-box {
+        .login-content-inner {
             width: 100%;
             max-width: 420px;
+            margin: 0 auto;
+        }
+
+        /* Right Panel - The Image */
+        .login-image {
+            width: 50%;
+            position: relative;
+            /* Beautiful colorful food spread image */
+            background-image: url('https://img.magnific.com/foto-gratis/tampak-atas-meja-penuh-makanan_23-2149209251.jpg?semt=ais_hybrid&w=740&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 10%;
+        }
+
+        /* Gentle brand overlay to make text readable and match theme */
+        .login-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 90, 0, 0.45) 0%, rgba(17, 24, 39, 0.2) 50%, rgba(43, 69, 223, 0.45) 100%);
+            z-index: 1;
+        }
+
+        .image-content {
             position: relative;
             z-index: 2;
-            animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            color: white;
+            animation: slideUp 1s ease-out forwards;
         }
 
-        @keyframes fade-in-up {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Logo */
-        .logo {
+        .image-content h2 {
+            font-family: var(--f-heading);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .image-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            max-width: 600px;
+            opacity: 0.95;
+        }
+
+        /* Decorative Badge on Image */
+        .image-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-family: var(--f-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-shadow: none;
+        }
+
+        /* Branding */
+        .brand {
             display: flex;
             align-items: center;
             gap: 12px;
             font-family: var(--f-heading);
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 800;
             color: var(--c-text-main);
-            margin-bottom: 2.5rem;
+            margin-bottom: 3rem;
+            text-decoration: none;
         }
 
-        .logo span {
+        .brand span {
             color: var(--c-primary);
         }
 
-        .logo-icon {
-            background: linear-gradient(135deg, var(--c-primary), #FF8F60);
+        .brand-icon {
+            background: var(--c-primary);
             color: white;
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
-            font-size: 1.5rem;
-            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 15px rgba(255, 90, 0, 0.3);
         }
 
-        /* Typography */
-        .login-box h1 {
+        /* Form Styling */
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
             font-family: var(--f-heading);
-            font-size: 2.4rem;
+            font-size: 2.2rem;
+            font-weight: 800;
             margin-bottom: 0.5rem;
             color: var(--c-text-main);
-            font-weight: 800;
             letter-spacing: -0.5px;
         }
 
-        .login-box p {
+        .login-header p {
             color: var(--c-text-muted);
-            margin-bottom: 2.5rem;
-            font-size: 1.05rem;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
-        /* Form Elements */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #374151;
         }
 
-        .input-with-icon {
+        .input-group {
             position: relative;
             display: flex;
             align-items: center;
         }
 
-        .input-with-icon i.icon-prefix {
+        .input-group i {
             position: absolute;
             left: 1.2rem;
             color: #9CA3AF;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .input-with-icon .form-control {
-            padding-left: 3.2rem;
-        }
-
-        .input-with-icon .form-control:focus ~ i.icon-prefix {
-            color: var(--c-primary);
+            font-size: 1rem;
+            transition: var(--transition);
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 18px;
-            border: 1px solid #E2E8F0;
+            padding: 14px 14px 14px 3.2rem;
+            background: #F9FAFB;
+            border: 1px solid #D1D5DB;
             border-radius: 12px;
             font-family: var(--f-body);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #F8FAFC;
+            font-size: 0.95rem;
             color: var(--c-text-main);
+            transition: var(--transition);
+        }
+
+        .form-control::placeholder {
+            color: #9CA3AF;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--c-primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(255, 90, 0, 0.1);
         }
 
-        .btn-login {
+        .input-group:focus-within i {
+            color: var(--c-primary);
+        }
+
+        .btn-submit {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #FF6B35 0%, #E85A25 100%);
+            padding: 14px;
+            background: var(--c-primary);
             color: white;
             border: none;
             border-radius: 12px;
             font-family: var(--f-heading);
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.25);
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(255, 90, 0, 0.3);
             margin-top: 1rem;
             display: flex;
             align-items: center;
@@ -214,24 +281,29 @@ if (isset($_POST['login'])) {
             gap: 10px;
         }
 
-        .btn-login:hover {
+        .btn-submit:hover {
+            background: var(--c-primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(255, 107, 53, 0.35);
+            box-shadow: 0 12px 25px rgba(255, 90, 0, 0.4);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
         }
 
-        .error-msg {
+        .error-alert {
             background: #FEF2F2;
             color: #DC2626;
-            padding: 14px 16px;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 10px;
             font-weight: 600;
             border: 1px solid #FECACA;
-            animation: shake 0.5s ease-in-out;
+            animation: shake 0.4s ease-in-out;
         }
 
         @keyframes shake {
@@ -240,198 +312,108 @@ if (isset($_POST['login'])) {
             75% { transform: translateX(5px); }
         }
 
-        .hint {
-            margin-top: 2.5rem;
-            font-size: 0.9rem;
-            color: var(--c-text-muted);
-            background: #F8FAFC;
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid #E2E8F0;
+        .demo-credentials {
+            margin-top: 2rem;
+            padding: 14px;
+            background: #FFF7ED;
+            border: 1px solid #FFEDD5;
+            border-radius: 10px;
             display: flex;
             align-items: flex-start;
             gap: 12px;
+            font-size: 0.85rem;
+            color: #9A3412;
         }
 
-        .hint i {
+        .demo-credentials i {
             color: var(--c-primary);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-top: 2px;
         }
 
-        /* Cute but professional subtle decor */
-        .cute-decor {
-            position: absolute;
-            z-index: 1;
-            opacity: 0.15;
-            user-select: none;
-            pointer-events: none;
+        .demo-credentials strong {
+            color: #7C2D12;
+            font-weight: 700;
         }
 
-        .cd-1 { top: 15%; left: 10%; font-size: 3rem; transform: rotate(-15deg); }
-        .cd-2 { bottom: 20%; right: 10%; font-size: 4rem; transform: rotate(15deg); }
-
-        /* Right Banner Section */
-        .login-banner-section {
-            flex: 0 0 50%;
-            /* Vibrant food spread image */
-            background-image: url('https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            display: flex;
-            align-items: flex-end;
-            padding: 4rem;
-            position: relative;
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .login-sidebar { width: 50%; padding: 2rem; }
+            .login-image { width: 50%; padding: 3rem; }
+            .image-content h2 { font-size: 2.5rem; }
         }
 
-        /* Gradient Overlay for photo */
-        .login-banner-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(17,24,39,0) 0%, rgba(17,24,39,0.8) 100%);
-            z-index: 1;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 2.5rem;
-            border-radius: 24px;
-            color: white;
-            width: 100%;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 2;
-            animation: slide-up 1s ease-out 0.3s both;
-        }
-
-        .glass-card h2 {
-            font-family: var(--f-heading);
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-            font-weight: 800;
-        }
-        
-        .glass-card p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: rgba(255,255,255,0.85);
-            margin: 0;
-        }
-
-        /* Author/Credit Badge */
-        .author-badge {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .author-badge img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-
-        .author-info h5 {
-            margin: 0;
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
-        .author-info span {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.6);
-        }
-
-        @media (max-width: 900px) {
-            .login-banner-section { display: none; }
-            .login-form-section { flex: 1; padding: 2rem; }
-            .login-box { max-width: 100%; }
+        @media (max-width: 768px) {
+            .login-image { display: none; }
+            .login-sidebar { width: 100%; padding: 2rem; align-items: center; }
+            .login-content-inner { width: 100%; max-width: 400px; }
         }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    
-    <!-- Left Side: Form -->
-    <div class="login-form-section">
-        <!-- Subtle decorative elements -->
-        <div class="cute-decor cd-1">🍜</div>
-        <div class="cute-decor cd-2">🥗</div>
-        
-        <div class="login-box">
-            <div class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-utensils"></i></div>
+<div class="login-wrapper">
+    <!-- Left Panel: Form -->
+    <div class="login-sidebar">
+        <div class="login-content-inner">
+            <a href="#" class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-utensils"></i></div>
                 Recipe<span>Hub</span>
+            </a>
+
+            <div class="login-header">
+                <h1>Mulai Memasak!</h1>
+                <p>Masuk untuk menemukan resep-resep istimewa dan bagikan kreasi lezat Anda.</p>
             </div>
 
-            <h1>Selamat Datang!</h1>
-            <p>Silakan masuk ke panel pengelola resep untuk menemukan dan mengatur koleksi hidangan favorit Anda.</p>
-
             <?php if ($error): ?>
-                <div class="error-msg">
-                    <i class="fa-solid fa-circle-exclamation"></i> <?= $error ?>
+                <div class="error-alert">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <?= htmlspecialchars($error) ?>
                 </div>
             <?php endif; ?>
 
             <form action="" method="POST">
                 <div class="form-group">
                     <label for="username">Nama Pengguna</label>
-                    <div class="input-with-icon">
-                        <i class="fa-solid fa-user icon-prefix"></i>
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
                         <input type="text" id="username" name="username" class="form-control" placeholder="admin" required autocomplete="off">
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Kata Sandi</label>
-                    <div class="input-with-icon">
-                        <i class="fa-solid fa-lock icon-prefix"></i>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
                         <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
                     </div>
                 </div>
                 
-                <button type="submit" name="login" class="btn-login">
-                    Masuk Sekarang <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                <button type="submit" name="login" class="btn-submit">
+                    Masuk ke Dashboard <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
 
-            <div class="hint">
-                <i class="fa-solid fa-lightbulb"></i>
+            <div class="demo-credentials">
+                <i class="fa-solid fa-circle-info"></i>
                 <div>
-                    <span style="display:block; font-weight: 600; color: var(--c-text-main); margin-bottom: 2px;">Catatan Kredensial</span>
-                    Untuk demo ini, gunakan Username: <strong>admin</strong> dan Password: <strong>password</strong>
+                    <div style="margin-bottom: 2px;">Data Login (Demo):</div>
+                    Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>password</strong>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Side: Visual Banner -->
-    <div class="login-banner-section">
-        <div class="glass-card">
-            <h2>Eksplorasi Dunia<br><span style="color: #FFD23F;">Kuliner Global.</span></h2>
-            <p>Akses ribuan resep autentik dari seluruh belahan dunia. Simpan, kelola, dan ciptakan keajaiban di dapur Anda dengan panduan langkah demi langkah.</p>
-            
-            <div class="author-badge">
-                <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=200&auto=format&fit=crop" alt="Chef">
-                <div class="author-info">
-                    <h5>Chef's Recommendation</h5>
-                    <span>Bergabunglah dengan ribuan penikmat kuliner lainnya</span>
-                </div>
+    <!-- Right Panel: Image -->
+    <div class="login-image">
+        <div class="image-content">
+            <div class="image-badge">
+                <i class="fa-solid fa-star" style="color: #FFD23F;"></i> Resep Terbaik dari Seluruh Dunia
             </div>
+            <h2>Dunia Rasa dalam Satu Sentuhan.</h2>
+            <p>Jelajahi ribuan kombinasi rasa, temukan inspirasi menu harian, dan hadirkan kebahagiaan di meja makan Anda setiap hari bersama RecipeHub.</p>
         </div>
     </div>
-
 </div>
 
 </body>
