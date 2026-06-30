@@ -1182,3 +1182,79 @@ textarea.form-control {
 .dark-mode footer p {
     color: var(--c-text-muted);
 }
+
+/* =========================================
+   PRINT MEDIA QUERY (PDF EXPORT)
+   ========================================= */
+@media print {
+    /* Sembunyikan elemen yang tidak perlu dicetak */
+    .navbar, footer, .btn, .search-bar, .hero, .explore-banner {
+        display: none !important;
+    }
+
+    /* Reset background dan warna teks untuk menghemat tinta / kerapian */
+    body {
+        background-color: #fff !important;
+        color: #000 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Pastikan kontainer menggunakan lebar penuh */
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .detail-box {
+        border: none !important;
+        box-shadow: none !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .detail-content {
+        padding: 0 !important;
+    }
+
+    /* Sesuaikan tata letak grid agar turun ke bawah secara natural (vertikal) */
+    .detail-grid {
+        display: block !important;
+    }
+    
+    /* Styling gambar agar rapi di kertas */
+    .detail-img {
+        max-width: 60% !important;
+        height: auto !important;
+        border-radius: 8px !important;
+        margin-bottom: 20px !important;
+        display: block;
+    }
+
+    /* Izinkan pemotongan antar halaman agar tidak meninggalkan ruang kosong (page break) */
+    .detail-section {
+        page-break-inside: auto;
+        margin-bottom: 20px !important;
+    }
+    
+    /* Sembunyikan iframe video YouTube dari cetakan */
+    iframe {
+        display: none !important;
+    }
+
+    /* Atur badge kategori agar rapi */
+    .badge {
+        position: static !important;
+        display: inline-block !important;
+        border: 1px solid #000 !important;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 4px 8px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* Ganti warna ikon centang dsb menjadi hitam/abu-abu */
+    i.fa-check, i.fa-solid {
+        color: #333 !important;
+    }
+}

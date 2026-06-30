@@ -18,7 +18,7 @@ if ($result->num_rows == 0) {
 
 $row = $result->fetch_assoc();
 
-// Parse ingredients and instructions to arrays for better display if they are separated by newlines
+
 $bahan_arr = explode("\n", trim($row['bahan']));
 $langkah_arr = explode("\n", trim($row['langkah']));
 ?>
@@ -115,10 +115,10 @@ $langkah_arr = explode("\n", trim($row['langkah']));
 }
 @media print {
     @page {
-        margin: 0;
+        margin: 1.5cm;
     }
     body {
-        margin: 1.6cm !important;
+        margin: 0 !important;
         background: #ffffff !important;
         color: #000000 !important;
         font-family: Arial, sans-serif !important;
@@ -149,8 +149,9 @@ $langkah_arr = explode("\n", trim($row['langkah']));
         border: none !important;
         padding: 0 !important;
         width: 100% !important;
+        min-height: auto !important; /* Mencegah kolom kosong yang memakan tempat */
         text-align: left !important;
-        margin-bottom: 1.5rem !important;
+        margin-bottom: 1rem !important;
     }
     .polaroid-frame {
         display: inline-block !important;
@@ -175,7 +176,7 @@ $langkah_arr = explode("\n", trim($row['langkah']));
     }
     .detail-section {
         margin-bottom: 1.5rem !important;
-        page-break-inside: avoid;
+        page-break-inside: auto;
     }
     .detail-section h3 {
         border-bottom: 1px solid #000000 !important;
@@ -189,7 +190,7 @@ $langkah_arr = explode("\n", trim($row['langkah']));
         font-size: 1rem !important;
     }
     .instructions-section {
-        margin-top: 3.5rem !important;
+        margin-top: 1.5rem !important;
     }
 }
 </style>
@@ -198,7 +199,7 @@ $langkah_arr = explode("\n", trim($row['langkah']));
     <div class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <a href="index.php" class="btn btn-outline" style="border-color: var(--c-border); color: var(--c-text-muted);"><i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar Resep</a>
         <div style="display: flex; gap: 0.5rem;">
-            <button onclick="window.print()" class="btn btn-outline" style="border-color: var(--c-primary); color: var(--c-primary);"><i class="fa-solid fa-file-pdf"></i> Cetak / PDF</button>
+            <button onclick="window.print()" class="btn btn-outline" style="border-color: var(--c-primary); color: var(--c-primary);"><i class="fa-solid fa-print"></i> Cetak PDF</button>
             <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-outline" style="border-color: var(--c-secondary); color: var(--c-secondary);"><i class="fa-solid fa-pen"></i> Edit</a>
             <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-primary" style="background-color: #EF4444; box-shadow: none;" onclick="return confirm('Apakah Anda yakin ingin menghapus resep ini?');"><i class="fa-solid fa-trash"></i> Hapus</a>
         </div>

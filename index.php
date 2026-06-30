@@ -74,8 +74,8 @@ $resep_baru = $resep_baru_query->fetch_assoc()['total'] ?? 0;
                     <i class="fa-solid fa-fire fa-2x"></i>
                 </div>
                 <div>
-                    <h4 style="font-size: 1.2rem; margin-bottom: 0.2rem; color: #111827;">Resep Terfavorit</h4>
-                    <p style="color: var(--c-text-muted); font-size: 0.95rem; margin:0;">Disukai 10k+ orang 🔥</p>
+                    <h4 style="font-size: 1.2rem; margin-bottom: 0.2rem; color: #111827;">Resep Spesial</h4>
+                    <p style="color: var(--c-text-muted); font-size: 0.95rem; margin:0;">Rekomendasi Hari Ini ✨</p>
                 </div>
             </div>
         </div>
