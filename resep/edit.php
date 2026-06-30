@@ -110,7 +110,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <a href="index.php" class="btn btn-outline" style="border-radius: 100px; padding: 0.6rem 1.5rem;"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
     </div>
 
-    <div class="form-container">
+    <style>
+    .form-container-horizontal {
+        max-width: 1000px !important;
+        width: 100%;
+    }
+    .edit-form-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 2.5rem;
+    }
+    .form-left-col, .form-right-col {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    @media (max-width: 900px) {
+        .edit-form-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+    </style>
+
+    <div class="form-container form-container-horizontal">
         <h3 style="margin-bottom: 2rem; font-family: var(--f-heading); color: var(--c-secondary); border-bottom: 2px solid #F3F4F6; padding-bottom: 1rem;">
             <?= htmlspecialchars($row['nama_resep']) ?>
         </h3>
@@ -126,87 +149,103 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div style="background-color: #10B981; color: white; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.8rem; display: flex; align-items: center; gap: 0.8rem; font-weight: 500; flex-wrap: wrap;">
                 <i class="fa-solid fa-circle-check"></i>
                 <span><?= $success ?></span>
-                <a href="index.php" style="color: white; text-decoration: underline; margin-left: auto; font-weight: 600;">Lihat Katalog Resep <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="index.php" style="color: white; text-decoration: underline; margin-left: auto; font-weight: 600;">Lihat Daftar Resep <i class="fa-solid fa-arrow-right"></i></a>
             </div>
         <?php endif; ?>
 
-        <form action="" method="POST" enctype="multipart/form-data">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="nama_resep"><i class="fa-solid fa-utensils"></i> Nama Resep *</label>
-                    <div class="input-with-icon">
-                        <i class="fa-solid fa-pen"></i>
-                        <input type="text" id="nama_resep" name="nama_resep" class="form-control" required value="<?= htmlspecialchars($row['nama_resep']) ?>" placeholder="Contoh: Nasi Goreng Spesial">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="kategori"><i class="fa-solid fa-tags"></i> Kategori *</label>
-                    <div class="input-with-icon">
-                        <i class="fa-solid fa-layer-group"></i>
-                        <input type="text" id="kategori" name="kategori" class="form-control" required value="<?= htmlspecialchars($row['kategori']) ?>" placeholder="Contoh: Utama, Dessert, Minuman, dll">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="bahan"><i class="fa-solid fa-basket-shopping"></i> Bahan-bahan * <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 500; margin-left: auto;">(Tiap bahan di baris baru)</span></label>
-                <textarea id="bahan" name="bahan" class="form-control" required placeholder="Tuliskan tiap bahan di baris baru..."><?= htmlspecialchars($row['bahan']) ?></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="langkah"><i class="fa-solid fa-list-ol"></i> Langkah Memasak * <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 500; margin-left: auto;">(Tiap instruksi di baris baru)</span></label>
-                <textarea id="langkah" name="langkah" class="form-control" required placeholder="Tuliskan instruksi langkah demi langkah..."><?= htmlspecialchars($row['langkah']) ?></textarea>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fa-solid fa-image"></i> Pratinjau Gambar Saat Ini</label>
-                <?php if($row['gambar']): ?>
-                    <?php 
-                    $img_src = (filter_var($row['gambar'], FILTER_VALIDATE_URL)) ? $row['gambar'] : '../assets/img/' . $row['gambar'];
-                    ?>
-                    <div class="current-image-preview">
-                        <img src="<?= $img_src ?>" alt="Current Image" onerror="this.src='https://via.placeholder.com/120x120?text=Error+Loading'">
-                        <div>
-                            <strong style="display: block; color: var(--c-text-main); margin-bottom: 4px; word-break: break-all;"><?= htmlspecialchars($row['gambar']) ?></strong>
-                            <span style="font-size: 0.85rem; color: var(--c-text-muted);">Gambar yang sedang digunakan saat ini.</span>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <div class="current-image-preview" style="padding: 1.5rem; gap: 1rem; color: var(--c-text-muted);">
-                        <i class="fa-regular fa-image fa-2xl" style="color: #9CA3AF;"></i>
-                        <span>Belum ada gambar yang ditentukan. Resep akan menggunakan emoji default.</span>
-                    </div>
-                <?php endif; ?>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label><i class="fa-solid fa-image"></i> Ganti Foto Masakan (Opsional)</label>
-                    <div style="display: flex; gap: 8px; flex-direction: column;">
+        <form action="" method="POST" enctype="multipart/form-data" class="edit-form-grid">
+            <div class="form-left-col">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nama_resep"><i class="fa-solid fa-utensils"></i> Nama Resep *</label>
                         <div class="input-with-icon">
-                            <i class="fa-solid fa-upload" style="margin-top: 4px;"></i>
-                            <input type="file" id="gambar_file" name="gambar_file" class="form-control" accept="image/*" style="padding-top: 13px;">
-                        </div>
-                        <div style="text-align: center; color: var(--c-text-muted); font-size: 0.85rem; font-weight: 700;">ATAU</div>
-                        <div class="input-with-icon">
-                            <i class="fa-solid fa-globe"></i>
-                            <input type="url" id="gambar_url" name="gambar_url" class="form-control" placeholder="Tempel URL gambar baru dari internet...">
+                            <i class="fa-solid fa-pen"></i>
+                            <input type="text" id="nama_resep" name="nama_resep" class="form-control" required value="<?= htmlspecialchars($row['nama_resep']) ?>" placeholder="Contoh: Nasi Goreng Spesial">
                         </div>
                     </div>
-                    <small style="color: var(--c-text-muted); font-size: 0.85rem; margin-top: 5px; display: block;">Jika Anda mengisi keduanya, file yang diunggah akan diprioritaskan.</small>
+
+                    <div class="form-group">
+                        <label for="kategori"><i class="fa-solid fa-tags"></i> Kategori *</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <?php
+                            $categories = ["Main Course", "Dessert", "Beverage", "Snack", "Breakfast", "Appetizer", "Soup", "Seafood"];
+                            $current_cat = $row['kategori'];
+                            ?>
+                            <select id="kategori" name="kategori" class="form-control" required style="height: 52px; padding-left: 2.8rem; background-image: none;">
+                                <option value="" disabled>-- Pilih Kategori --</option>
+                                <?php foreach ($categories as $cat): ?>
+                                    <option value="<?= $cat ?>" <?= strcasecmp($current_cat, $cat) === 0 ? 'selected' : '' ?>><?= $cat ?></option>
+                                <?php endforeach; ?>
+                                <?php if (!in_array($current_cat, $categories) && !empty($current_cat)): ?>
+                                    <option value="<?= htmlspecialchars($current_cat) ?>" selected><?= htmlspecialchars($current_cat) ?></option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 2.5rem;">
-                    <label for="sumber"><i class="fa-solid fa-bookmark"></i> Sumber Resep (Opsional)</label>
-                    <div class="input-with-icon">
-                        <i class="fa-solid fa-at"></i>
-                        <input type="text" id="sumber" name="sumber" class="form-control" value="<?= htmlspecialchars($row['sumber']) ?>" placeholder="Nama penulis / URL">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-image"></i> Pratinjau Gambar Saat Ini</label>
+                    <?php if($row['gambar']): ?>
+                        <?php 
+                        $img_src = (filter_var($row['gambar'], FILTER_VALIDATE_URL)) ? $row['gambar'] : '../assets/img/' . $row['gambar'];
+                        ?>
+                        <div class="current-image-preview" style="margin-bottom: 0;">
+                            <img src="<?= $img_src ?>" alt="Current Image" onerror="this.src='https://via.placeholder.com/120x120?text=Error+Loading'">
+                            <div>
+                                <strong style="display: block; color: var(--c-text-main); margin-bottom: 4px; word-break: break-all;"><?= htmlspecialchars($row['gambar']) ?></strong>
+                                <span style="font-size: 0.85rem; color: var(--c-text-muted);">Gambar yang sedang digunakan saat ini.</span>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="current-image-preview" style="padding: 1.5rem; gap: 1rem; color: var(--c-text-muted); margin-bottom: 0;">
+                            <i class="fa-regular fa-image fa-2xl" style="color: #9CA3AF;"></i>
+                            <span>Belum ada gambar yang ditentukan. Resep akan menggunakan emoji default.</span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                
+                <div class="form-row" style="margin-top: 1.8rem;">
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-image"></i> Ganti Foto Masakan (Opsional)</label>
+                        <div style="display: flex; gap: 8px; flex-direction: column;">
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-upload" style="margin-top: 4px;"></i>
+                                <input type="file" id="gambar_file" name="gambar_file" class="form-control" accept="image/*" style="padding-top: 13px;">
+                            </div>
+                            <div style="text-align: center; color: var(--c-text-muted); font-size: 0.85rem; font-weight: 700;">ATAU</div>
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-globe"></i>
+                                <input type="url" id="gambar_url" name="gambar_url" class="form-control" placeholder="Tempel URL gambar baru dari internet...">
+                            </div>
+                        </div>
+                        <small style="color: var(--c-text-muted); font-size: 0.85rem; margin-top: 5px; display: block;">Jika Anda mengisi keduanya, file yang diunggah akan diprioritaskan.</small>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2.5rem;">
+                        <label for="sumber"><i class="fa-solid fa-bookmark"></i> Sumber Resep (Opsional)</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-at"></i>
+                            <input type="text" id="sumber" name="sumber" class="form-control" value="<?= htmlspecialchars($row['sumber']) ?>" placeholder="Nama penulis / URL">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-large" style="width: 100%; border: none; border-radius: 16px; font-size: 1.15rem; letter-spacing: 0.5px; box-shadow: 0 10px 25px -5px rgba(255, 107, 53, 0.4);"><i class="fa-solid fa-floppy-disk" style="margin-right: 8px;"></i> Simpan Perubahan</button>
+            <div class="form-right-col">
+                <div class="form-group" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 1.5rem;">
+                    <label for="bahan"><i class="fa-solid fa-basket-shopping"></i> Bahan-bahan * <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 500; margin-left: auto;">(Tiap bahan di baris baru)</span></label>
+                    <textarea id="bahan" name="bahan" class="form-control" required placeholder="Tuliskan tiap bahan di baris baru..." style="flex: 1; min-height: 120px;"><?= htmlspecialchars($row['bahan']) ?></textarea>
+                </div>
+
+                <div class="form-group" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 1.5rem;">
+                    <label for="langkah"><i class="fa-solid fa-list-ol"></i> Langkah Memasak * <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 500; margin-left: auto;">(Tiap instruksi di baris baru)</span></label>
+                    <textarea id="langkah" name="langkah" class="form-control" required placeholder="Tuliskan instruksi langkah demi langkah..." style="flex: 1; min-height: 160px;"><?= htmlspecialchars($row['langkah']) ?></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large" style="width: 100%; border: none; border-radius: 16px; font-size: 1.15rem; letter-spacing: 0.5px; box-shadow: 0 10px 25px -5px rgba(255, 107, 53, 0.4); margin-top: auto;"><i class="fa-solid fa-floppy-disk" style="margin-right: 8px;"></i> Simpan Perubahan</button>
+            </div>
         </form>
     </div>
 </div>

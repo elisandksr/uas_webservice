@@ -24,6 +24,11 @@ if (!isset($_SESSION['login'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Main CSS -->
     <link rel="stylesheet" href="<?= $base_url ?>/assets/css/style.css?v=<?= time() ?>">
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
 </head>
 <body>
 
@@ -40,11 +45,42 @@ if (!isset($_SESSION['login'])) {
             <li><a href="<?= $base_url ?>/resep/index.php">Katalog Resep</a></li>
             <li><a href="<?= $base_url ?>/api/index.php">Jelajahi Dunia</a></li>
         </ul>
-        <div class="nav-cta" style="display: flex; gap: 10px;">
-            <a href="<?= $base_url ?>/resep/create.php" class="btn btn-primary" style="box-shadow: none; padding: 0.6rem 1.5rem;"><i class="fa-solid fa-plus"></i> Tulis Resep</a>
+        <div class="nav-cta" style="display: flex; gap: 10px; align-items: center;">
+            <button id="theme-toggle" class="btn btn-outline" style="padding: 0.6rem; border-color: var(--c-border); color: var(--c-text-muted); display: inline-flex; justify-content: center; align-items: center; width: 42px; height: 42px; border-radius: 12px; cursor: pointer;">
+                <i class="fa-solid fa-moon"></i>
+            </button>
             <a href="<?= $base_url ?>/logout.php" class="btn btn-outline" style="padding: 0.6rem 1.2rem; border-color: #EF4444; color: #EF4444;" onclick="return confirm('Yakin ingin keluar?');"><i class="fa-solid fa-right-from-bracket"></i> Keluar</a>
         </div>
     </div>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    if (document.documentElement.classList.contains('dark-mode')) {
+        themeIcon.className = 'fa-solid fa-sun';
+        themeToggle.style.color = '#FFD23F';
+        themeToggle.style.borderColor = '#FFD23F';
+    }
+    
+    themeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark-mode');
+        const isDark = document.documentElement.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
+        if (isDark) {
+            themeIcon.className = 'fa-solid fa-sun';
+            themeToggle.style.color = '#FFD23F';
+            themeToggle.style.borderColor = '#FFD23F';
+        } else {
+            themeIcon.className = 'fa-solid fa-moon';
+            themeToggle.style.color = 'var(--c-text-muted)';
+            themeToggle.style.borderColor = 'var(--c-border)';
+        }
+    });
+});
+</script>
 
 <main class="main-content">

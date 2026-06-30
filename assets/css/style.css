@@ -1098,3 +1098,87 @@ textarea.form-control {
 textarea.form-control {
     padding: 1rem;
 }
+
+/* =========================================
+   DARK MODE OVERRIDES
+   ========================================= */
+.dark-mode {
+    --c-bg: #111827;
+    --c-white: #1F2937;
+    --c-text-main: #F9FAFB;
+    --c-text-muted: #9CA3AF;
+    --c-border: #374151;
+    background-color: var(--c-bg);
+    color: var(--c-text-main);
+}
+
+/* Background overrides */
+.dark-mode .navbar {
+    background: rgba(31, 41, 55, 0.95) !important;
+    border-bottom: 1px solid var(--c-border);
+}
+.dark-mode .navbar.scrolled {
+    background: rgba(17, 24, 39, 0.95) !important;
+}
+.dark-mode .nav-menu a {
+    color: var(--c-text-muted);
+}
+.dark-mode .nav-menu a:hover,
+.dark-mode .nav-menu a.active {
+    color: var(--c-primary);
+}
+
+/* Card, search bar and panel overrides */
+.dark-mode .recipe-card,
+.dark-mode .detail-box-horizontal,
+.dark-mode .search-bar,
+.dark-mode .form-container,
+.dark-mode .current-image-preview,
+.dark-mode .login-box {
+    background-color: var(--c-white) !important;
+    border-color: var(--c-border) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .search-bar input,
+.dark-mode .search-bar select,
+.dark-mode .form-control {
+    background-color: #111827 !important;
+    color: var(--c-text-main) !important;
+    border-color: var(--c-border) !important;
+}
+
+.dark-mode .form-control::placeholder {
+    color: #4B5563 !important;
+}
+
+/* Detail page overrides */
+.dark-mode .detail-img-col {
+    background-color: #111827 !important;
+    border-color: var(--c-border) !important;
+}
+.dark-mode .polaroid-frame {
+    background-color: #1F2937 !important;
+    border-color: var(--c-border) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+}
+.dark-mode .polaroid-caption {
+    color: var(--c-text-main) !important;
+}
+
+.dark-mode .detail-section h3 {
+    border-bottom-color: var(--c-border) !important;
+}
+.dark-mode .detail-list li,
+.dark-mode .detail-ol li {
+    color: var(--c-text-muted) !important;
+}
+
+/* Footer overrides */
+.dark-mode footer {
+    background-color: #111827;
+    border-top: 1px solid var(--c-border);
+}
+.dark-mode footer p {
+    color: var(--c-text-muted);
+}

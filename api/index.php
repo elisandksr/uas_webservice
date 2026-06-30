@@ -5,6 +5,7 @@ require_once '../includes/header.php';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $kategori = isset($_GET['kategori']) ? $_GET['kategori'] : '';
 $action = isset($_GET['action']) ? $_GET['action'] : '';
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'default';
 
 $api_base = "https://www.themealdb.com/api/json/v1/1/";
 $meals = [];
@@ -40,6 +41,17 @@ if ($response) {
     $data = json_decode($response, true);
     if (isset($data['meals']) && is_array($data['meals'])) {
         $meals = $data['meals'];
+        
+        // Sorting logic in PHP
+        if ($sort == 'az') {
+            usort($meals, function($a, $b) {
+                return strcasecmp($a['strMeal'], $b['strMeal']);
+            });
+        } elseif ($sort == 'za') {
+            usort($meals, function($a, $b) {
+                return strcasecmp($b['strMeal'], $a['strMeal']);
+            });
+        }
     }
 }
 ?>
@@ -79,8 +91,15 @@ if ($response) {
             <?php endforeach; ?>
         </select>
         
+        <!-- Sorting Data -->
+        <select name="sort" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 10px; border-left: 1px solid var(--c-border); min-width: 120px;">
+            <option value="default" <?= $sort == 'default' ? 'selected' : '' ?>>Urutan Default</option>
+            <option value="az" <?= $sort == 'az' ? 'selected' : '' ?>>Nama (A-Z)</option>
+            <option value="za" <?= $sort == 'za' ? 'selected' : '' ?>>Nama (Z-A)</option>
+        </select>
+        
         <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: var(--radius-sm);"><i class="fa-solid fa-search"></i> Cari</button>
-        <?php if(!empty($search) || !empty($kategori) || $action == 'random'): ?>
+        <?php if(!empty($search) || !empty($kategori) || $action == 'random' || $sort != 'default'): ?>
             <a href="index.php" class="btn btn-outline" style="padding: 0.6rem 1.5rem; border-radius: var(--radius-sm);">Reset</a>
         <?php endif; ?>
     </form>

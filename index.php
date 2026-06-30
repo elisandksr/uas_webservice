@@ -2,9 +2,10 @@
 require_once 'config/database.php';
 require_once 'includes/header.php';
 
-// Get search & category filters
+// Get search, category filters & sorting
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $kategori = isset($_GET['kategori']) ? $_GET['kategori'] : '';
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'terbaru';
 
 // Base query
 $sql = "SELECT * FROM resep WHERE 1=1";
@@ -19,7 +20,21 @@ if (!empty($kategori)) {
     $sql .= " AND kategori = '$kategori'";
 }
 
-$sql .= " ORDER BY created_at DESC LIMIT 9";
+// Sorting logic
+$order_clause = "ORDER BY created_at DESC";
+switch ($sort) {
+    case 'terlama':
+        $order_clause = "ORDER BY created_at ASC";
+        break;
+    case 'az':
+        $order_clause = "ORDER BY nama_resep ASC";
+        break;
+    case 'za':
+        $order_clause = "ORDER BY nama_resep DESC";
+        break;
+}
+
+$sql .= " " . $order_clause . " LIMIT 9";
 $result_latest = $conn->query($sql);
 
 // Get categories for filter dropdown
@@ -115,9 +130,15 @@ $resep_baru = $resep_baru_query->fetch_assoc()['total'] ?? 0;
                 <?php endwhile; ?>
             <?php endif; ?>
         </select>
+        <select name="sort" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 15px; border-left: 1px solid var(--c-border); font-size: 1.05rem; cursor: pointer;">
+            <option value="terbaru" <?= $sort == 'terbaru' ? 'selected' : '' ?>>Urutan Terbaru</option>
+            <option value="terlama" <?= $sort == 'terlama' ? 'selected' : '' ?>>Urutan Terlama</option>
+            <option value="az" <?= $sort == 'az' ? 'selected' : '' ?>>Nama (A-Z)</option>
+            <option value="za" <?= $sort == 'za' ? 'selected' : '' ?>>Nama (Z-A)</option>
+        </select>
         
         <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 100px; font-size: 1rem;"><i class="fa-solid fa-search"></i> Cari</button>
-        <?php if(!empty($search) || !empty($kategori)): ?>
+        <?php if(!empty($search) || !empty($kategori) || $sort != 'terbaru'): ?>
             <a href="index.php" class="btn btn-outline" style="padding: 0.8rem 2rem; border-radius: 100px; font-size: 1rem;">Reset</a>
         <?php endif; ?>
     </form>
@@ -137,7 +158,7 @@ $resep_baru = $resep_baru_query->fetch_assoc()['total'] ?? 0;
         </div>
         <?php if (empty($search) && empty($kategori)): ?>
             <a href="<?= $base_url ?>/resep/index.php" class="btn btn-outline" style="padding: 0.6rem 1.5rem; font-size: 0.95rem; border-radius: 100px; display: inline-flex; align-items: center; gap: 8px;">
-                Lihat Katalog <i class="fa-solid fa-arrow-right"></i>
+                Lihat Semua Resep <i class="fa-solid fa-arrow-right"></i>
             </a>
         <?php endif; ?>
     </div>

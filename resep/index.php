@@ -56,7 +56,7 @@ $cat_result = $conn->query("SELECT DISTINCT kategori FROM resep ORDER BY kategor
                 <i class="fa-solid fa-book-open" style="margin-right: 4px;"></i> Koleksi Resep Pribadi
             </div>
             <h1 style="font-size: 2rem; color: white; margin-bottom: 0.6rem; font-family: var(--f-heading); text-shadow: 0 2px 5px rgba(0,0,0,0.2); line-height: 1.2; font-weight: 800; text-align: left;">
-                <?= !empty($kategori) ? "Katalog Resep<br><span style='color: #FFD23F;'>" . htmlspecialchars($kategori) . " 📖</span>" : "Semua Resep<br><span style='color: #FFD23F;'>Lokal 📖</span>" ?>
+                <?= !empty($kategori) ? "Daftar Resep<br><span style='color: #FFD23F;'>" . htmlspecialchars($kategori) . " 📖</span>" : "Semua Resep<br><span style='color: #FFD23F;'>Lokal 📖</span>" ?>
             </h1>
             <p style="font-size: 0.95rem; color: rgba(255,255,255,0.9); margin-bottom: 1.2rem; line-height: 1.5; text-shadow: 0 1px 5px rgba(0,0,0,0.2); text-align: left;">Kelola dan temukan koleksi resep andalan Anda. Tambahkan masakan baru atau cari resep untuk inspirasi masak hari ini.</p>
             <a href="<?= $base_url ?>/resep/create.php" class="btn" style="background: white; color: var(--c-primary); padding: 0.6rem 1.5rem; font-size: 0.9rem; border-radius: 100px; font-weight: 700; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)';">
