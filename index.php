@@ -32,6 +32,21 @@ switch ($sort) {
     case 'za':
         $order_clause = "ORDER BY nama_resep DESC";
         break;
+    case 'terbaru':
+    default:
+        if (!empty($search)) {
+            // Algoritma Relevansi: Prioritaskan nama_resep yang cocok tepat, lalu diawali kata kunci, lalu mengandung kata kunci, terakhir baru dari bahan.
+            $order_clause = "ORDER BY 
+                CASE 
+                    WHEN nama_resep = '$search' THEN 1 
+                    WHEN nama_resep LIKE '$search%' THEN 2 
+                    WHEN nama_resep LIKE '%$search%' THEN 3 
+                    ELSE 4 
+                END ASC, created_at DESC";
+        } else {
+            $order_clause = "ORDER BY created_at DESC";
+        }
+        break;
 }
 
 $sql .= " " . $order_clause . " LIMIT 9";

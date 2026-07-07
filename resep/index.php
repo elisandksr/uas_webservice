@@ -11,7 +11,7 @@ $sql = "SELECT * FROM resep WHERE 1=1";
 
 if (!empty($search)) {
     $search = $conn->real_escape_string($search);
-    $sql .= " AND (nama_resep LIKE '%$search%' OR bahan LIKE '%$search%')";
+    $sql .= " AND nama_resep LIKE '%$search%'";
 }
 
 if (!empty($kategori)) {
@@ -32,7 +32,18 @@ switch ($sort) {
         break;
     case 'terbaru':
     default:
-        $sql .= " ORDER BY created_at DESC";
+        if (!empty($search)) {
+            // Algoritma Relevansi: Prioritaskan nama_resep yang cocok tepat, lalu diawali kata kunci, lalu mengandung kata kunci, terakhir baru dari bahan.
+            $sql .= " ORDER BY 
+                CASE 
+                    WHEN nama_resep = '$search' THEN 1 
+                    WHEN nama_resep LIKE '$search%' THEN 2 
+                    WHEN nama_resep LIKE '%$search%' THEN 3 
+                    ELSE 4 
+                END ASC, created_at DESC";
+        } else {
+            $sql .= " ORDER BY created_at DESC";
+        }
         break;
 }
 
@@ -66,12 +77,12 @@ $cat_result = $conn->query("SELECT DISTINCT kategori FROM resep ORDER BY kategor
     </section>
 
     <!-- Search & Filter Toolbar -->
-    <form action="" method="GET" class="search-bar" style="margin-bottom: 3rem;">
-        <i class="fa-solid fa-search search-icon"></i>
-        <input type="text" name="search" placeholder="Cari nama atau bahan (contoh: ayam, santan)..." value="<?= htmlspecialchars($search) ?>" style="flex: 1;">
+    <form action="" method="GET" class="search-bar" style="margin-bottom: 3rem; padding: 15px 25px; border-radius: 100px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); background: white; display: flex; align-items: center; gap: 15px; border: 1px solid var(--c-border); transition: all 0.3s ease;">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--c-primary); font-size: 1.4rem;"></i>
+        <input type="text" name="search" placeholder="Cari nama resep (contoh: ayam bakar, rendang)..." value="<?= htmlspecialchars($search) ?>" style="font-size: 1.1rem; border: none; outline: none; flex: 1;">
         
         <!-- Filter Kategori -->
-        <select name="kategori" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 10px; border-left: 1px solid var(--c-border); min-width: 130px;">
+        <select name="kategori" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 15px; border-left: 1px solid var(--c-border); font-size: 1.05rem; cursor: pointer;">
             <option value="">Semua Kategori</option>
             <?php while($c = $cat_result->fetch_assoc()): ?>
                 <option value="<?= htmlspecialchars($c['kategori']) ?>" <?= $kategori == $c['kategori'] ? 'selected' : '' ?>>
@@ -81,21 +92,21 @@ $cat_result = $conn->query("SELECT DISTINCT kategori FROM resep ORDER BY kategor
         </select>
         
         <!-- Sorting Data -->
-        <select name="sort" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 10px; border-left: 1px solid var(--c-border); min-width: 140px;">
+        <select name="sort" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 15px; border-left: 1px solid var(--c-border); font-size: 1.05rem; cursor: pointer;">
             <option value="terbaru" <?= $sort == 'terbaru' ? 'selected' : '' ?>>Urutan Terbaru</option>
             <option value="terlama" <?= $sort == 'terlama' ? 'selected' : '' ?>>Urutan Terlama</option>
             <option value="az" <?= $sort == 'az' ? 'selected' : '' ?>>Nama (A-Z)</option>
             <option value="za" <?= $sort == 'za' ? 'selected' : '' ?>>Nama (Z-A)</option>
         </select>
         
-        <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: var(--radius-sm);"><i class="fa-solid fa-search"></i> Cari</button>
+        <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 100px; font-size: 1rem;"><i class="fa-solid fa-search"></i> Cari</button>
         <?php if(!empty($search) || !empty($kategori) || $sort != 'terbaru'): ?>
-            <a href="index.php" class="btn btn-outline" style="padding: 0.6rem 1.5rem; border-radius: var(--radius-sm);">Reset</a>
+            <a href="index.php" class="btn btn-outline" style="padding: 0.8rem 2rem; border-radius: 100px; font-size: 1rem;">Reset</a>
         <?php endif; ?>
     </form>
 
     <div class="section-header">
-        <h2 class="section-title">Hasil Pencarian</h2>
+        <h2 class="section-title"><?= (!empty($search) || !empty($kategori)) ? 'Hasil Pencarian' : 'Semua Resep' ?></h2>
     </div>
 
     <!-- Recipe Grid -->

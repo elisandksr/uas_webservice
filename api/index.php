@@ -25,6 +25,23 @@ if ($cat_response) {
 if ($action == 'random') {
     $response = @file_get_contents($api_base . "random.php");
     $api_title = "Resep Kejutan Untuk Anda!";
+} elseif (!empty($search) && !empty($kategori)) {
+    // Kombinasi pencarian teks dan filter kategori untuk TheMealDB
+    $response = @file_get_contents($api_base . "search.php?s=" . urlencode($search));
+    if ($response) {
+        $data = json_decode($response, true);
+        if (isset($data['meals']) && is_array($data['meals'])) {
+            $filtered_meals = [];
+            foreach ($data['meals'] as $meal) {
+                if (isset($meal['strCategory']) && strcasecmp($meal['strCategory'], $kategori) === 0) {
+                    $filtered_meals[] = $meal;
+                }
+            }
+            $data['meals'] = $filtered_meals;
+            $response = json_encode($data);
+        }
+    }
+    $api_title = "Hasil Pencarian: " . htmlspecialchars($search) . " (Kategori: " . htmlspecialchars($kategori) . ")";
 } elseif (!empty($search)) {
     $response = @file_get_contents($api_base . "search.php?s=" . urlencode($search));
     $api_title = "Hasil Pencarian: " . htmlspecialchars($search);
@@ -32,9 +49,11 @@ if ($action == 'random') {
     $response = @file_get_contents($api_base . "filter.php?c=" . urlencode($kategori));
     $api_title = "Kategori: " . htmlspecialchars($kategori);
 } else {
-    // Default show some recipes (e.g., search with empty string or specific letter)
-    $response = @file_get_contents($api_base . "search.php?s=chicken");
-    $api_title = "Rekomendasi Resep Ayam Dunia";
+    // Default show random recommendations based on popular keywords
+    $keywords = ['chicken', 'beef', 'cake', 'pasta', 'fish', 'pork', 'salad', 'soup', 'cheese', 'egg'];
+    $random_keyword = $keywords[array_rand($keywords)];
+    $response = @file_get_contents($api_base . "search.php?s=" . $random_keyword);
+    $api_title = "Rekomendasi Resep Dunia";
 }
 
 if ($response) {
@@ -51,6 +70,30 @@ if ($response) {
             usort($meals, function($a, $b) {
                 return strcasecmp($b['strMeal'], $a['strMeal']);
             });
+        } elseif ($sort == 'default' && !empty($search)) {
+            // Algoritma Relevansi untuk API
+            $search_lower = strtolower($search);
+            usort($meals, function($a, $b) use ($search_lower) {
+                $nameA = strtolower($a['strMeal']);
+                $nameB = strtolower($b['strMeal']);
+                
+                $scoreA = 4;
+                if ($nameA === $search_lower) $scoreA = 1;
+                elseif (strpos($nameA, $search_lower) === 0) $scoreA = 2; // starts with
+                elseif (strpos($nameA, $search_lower) !== false) $scoreA = 3; // contains
+                
+                $scoreB = 4;
+                if ($nameB === $search_lower) $scoreB = 1;
+                elseif (strpos($nameB, $search_lower) === 0) $scoreB = 2;
+                elseif (strpos($nameB, $search_lower) !== false) $scoreB = 3;
+                
+                if ($scoreA == $scoreB) {
+                    return strcasecmp($a['strMeal'], $b['strMeal']);
+                }
+                return $scoreA - $scoreB;
+            });
+        } elseif ($sort == 'default' && empty($search) && empty($kategori) && empty($action)) {
+            shuffle($meals);
         }
     }
 }
@@ -78,11 +121,11 @@ if ($response) {
     </section>
 
     <!-- Search & Filter Toolbar -->
-    <form action="" method="GET" class="search-bar" style="margin-bottom: 3rem;">
-        <i class="fa-solid fa-search search-icon"></i>
-        <input type="text" name="search" placeholder="Cari resep (contoh: pasta, salad, soup)..." value="<?= htmlspecialchars($search) ?>">
+    <form action="" method="GET" class="search-bar" style="margin-bottom: 3rem; padding: 15px 25px; border-radius: 100px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); background: white; display: flex; align-items: center; gap: 15px; border: 1px solid var(--c-border); transition: all 0.3s ease;">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--c-primary); font-size: 1.4rem;"></i>
+        <input type="text" name="search" placeholder="Cari resep (contoh: pasta, salad, soup)..." value="<?= htmlspecialchars($search) ?>" style="font-size: 1.1rem; border: none; outline: none; flex: 1;">
         
-        <select name="kategori" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 10px; border-left: 1px solid var(--c-border);">
+        <select name="kategori" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 15px; border-left: 1px solid var(--c-border); font-size: 1.05rem; cursor: pointer;">
             <option value="">Semua Kategori</option>
             <?php foreach($categories as $cat): ?>
                 <option value="<?= htmlspecialchars($cat['strCategory']) ?>" <?= $kategori == $cat['strCategory'] ? 'selected' : '' ?>>
@@ -92,15 +135,15 @@ if ($response) {
         </select>
         
         <!-- Sorting Data -->
-        <select name="sort" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 10px; border-left: 1px solid var(--c-border); min-width: 120px;">
+        <select name="sort" style="border: none; outline: none; font-family: var(--f-body); color: var(--c-text-main); background: transparent; padding: 0 15px; border-left: 1px solid var(--c-border); font-size: 1.05rem; cursor: pointer;">
             <option value="default" <?= $sort == 'default' ? 'selected' : '' ?>>Urutan Default</option>
             <option value="az" <?= $sort == 'az' ? 'selected' : '' ?>>Nama (A-Z)</option>
             <option value="za" <?= $sort == 'za' ? 'selected' : '' ?>>Nama (Z-A)</option>
         </select>
         
-        <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: var(--radius-sm);"><i class="fa-solid fa-search"></i> Cari</button>
+        <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 100px; font-size: 1rem;"><i class="fa-solid fa-search"></i> Cari</button>
         <?php if(!empty($search) || !empty($kategori) || $action == 'random' || $sort != 'default'): ?>
-            <a href="index.php" class="btn btn-outline" style="padding: 0.6rem 1.5rem; border-radius: var(--radius-sm);">Reset</a>
+            <a href="index.php" class="btn btn-outline" style="padding: 0.8rem 2rem; border-radius: 100px; font-size: 1rem;">Reset</a>
         <?php endif; ?>
     </form>
 
