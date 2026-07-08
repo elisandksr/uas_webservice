@@ -33,7 +33,7 @@ switch ($sort) {
     case 'terbaru':
     default:
         if (!empty($search)) {
-            // Algoritma Relevansi: Prioritaskan nama_resep yang cocok tepat, lalu diawali kata kunci, lalu mengandung kata kunci, terakhir baru dari bahan.
+            // Algoritma Relevansi: Prioritaskan nama_resep yang cocok tepat, lalu diawali kata kunci, lalu mengandung kata kunci.
             $sql .= " ORDER BY 
                 CASE 
                     WHEN nama_resep = '$search' THEN 1 

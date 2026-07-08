@@ -12,7 +12,7 @@ $sql = "SELECT * FROM resep WHERE 1=1";
 
 if (!empty($search)) {
     $search = $conn->real_escape_string($search);
-    $sql .= " AND (nama_resep LIKE '%$search%' OR bahan LIKE '%$search%')";
+    $sql .= " AND nama_resep LIKE '%$search%'";
 }
 
 if (!empty($kategori)) {
@@ -35,7 +35,7 @@ switch ($sort) {
     case 'terbaru':
     default:
         if (!empty($search)) {
-            // Algoritma Relevansi: Prioritaskan nama_resep yang cocok tepat, lalu diawali kata kunci, lalu mengandung kata kunci, terakhir baru dari bahan.
+            // Algoritma Relevansi: Prioritaskan nama_resep yang cocok tepat, lalu diawali kata kunci, lalu mengandung kata kunci.
             $order_clause = "ORDER BY 
                 CASE 
                     WHEN nama_resep = '$search' THEN 1 
